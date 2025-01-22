@@ -3,9 +3,14 @@ import mongoose from "mongoose";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import cors from "cors";
+import ConnectMongoDBSession from "connect-mongodb-session";
+import session from "express-session";
+import cookieParser from "cookie-parser";
 import { config } from "./config/config.js";
+import { homeRouter } from "./routes/home.route.js";
 
 const app = express();
+const MongoDBStore = ConnectMongoDBSession(session);
 
 mongoose.connect(config.dbUrl).then(() => {
   console.log("mongodb server started");
@@ -19,11 +24,35 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(join(__dirname, "assets")));
 app.use(express.static(join(__dirname, "public")));
+app.use(cookieParser());
 
-// Routers
-app.use("/", (req, res) => {
-  res.send("Hello, world!");
+const store = new MongoDBStore({
+  uri: config.dbUrl,
+  collection: "sessions",
 });
+
+store.on("error", (error) => {
+  console.error("Session store error:", error);
+});
+
+app.use(
+  session({
+    secret: config.sessionKey,
+    resave: false,
+    saveUninitialized: false,
+    store,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24,
+      httpOnly: true,
+      secure: false,
+    },
+  })
+);
+
+app.set("view engine", "ejs");
+app.set("views", "views");
+
+app.use("/", homeRouter);
 
 app.all("*", (req, res, next) => {
   return res.status(404).json({
