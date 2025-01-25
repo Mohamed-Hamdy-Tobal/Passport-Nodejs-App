@@ -8,6 +8,8 @@ import session from "express-session";
 import cookieParser from "cookie-parser";
 import { config } from "./config/config.js";
 import { homeRouter } from "./routes/home.route.js";
+import flash from "connect-flash";
+import { authRouter } from "./models/auth.route.js";
 
 const app = express();
 const MongoDBStore = ConnectMongoDBSession(session);
@@ -19,12 +21,13 @@ mongoose.connect(config.dbUrl).then(() => {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+app.use(flash());
 app.use(cors());
-app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(join(__dirname, "assets")));
 app.use(express.static(join(__dirname, "public")));
-app.use(cookieParser());
 
 const store = new MongoDBStore({
   uri: config.dbUrl,
@@ -53,6 +56,7 @@ app.set("view engine", "ejs");
 app.set("views", "views");
 
 app.use("/", homeRouter);
+app.use("/", authRouter);
 
 app.all("*", (req, res, next) => {
   return res.status(404).json({
