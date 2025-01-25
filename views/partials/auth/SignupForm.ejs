@@ -1,35 +1,18 @@
 <form id="signupForm">
-  <div class="grid gap-6 mb-6 md:grid-cols-2">
-    <div>
-      <label
-        for="firstName"
-        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-        >First name</label
-      >
-      <input
-        type="text"
-        id="firstName"
-        name="firstName"
-        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-        placeholder="John"
-        required
-      />
-    </div>
-    <div>
-      <label
-        for="lastName"
-        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-        >Last name</label
-      >
-      <input
-        type="text"
-        id="lastName"
-        name="lastName"
-        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-        placeholder="Doe"
-        required
-      />
-    </div>
+  <div class="mb-6">
+    <label
+      for="username"
+      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+      >User name</label
+    >
+    <input
+      type="text"
+      id="username"
+      name="username"
+      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      placeholder="John"
+      required
+    />
   </div>
 
   <div class="mb-6">
@@ -119,7 +102,6 @@
           body: formData,
         });
 
-        
         if (response.ok) {
           const data = await response.json();
           alert("Signup successful!");
