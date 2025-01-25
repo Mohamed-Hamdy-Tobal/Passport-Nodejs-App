@@ -9,7 +9,7 @@ import cookieParser from "cookie-parser";
 import { config } from "./config/config.js";
 import { homeRouter } from "./routes/home.route.js";
 import flash from "connect-flash";
-import { authRouter } from "./models/auth.route.js";
+import { authRouter } from "./routes/auth.route.js";
 
 const app = express();
 const MongoDBStore = ConnectMongoDBSession(session);
