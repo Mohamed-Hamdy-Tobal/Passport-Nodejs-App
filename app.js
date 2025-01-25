@@ -10,6 +10,7 @@ import { config } from "./config/config.js";
 import { homeRouter } from "./routes/home.route.js";
 import flash from "connect-flash";
 import { authRouter } from "./routes/auth.route.js";
+import passport from "./config/passport.config.js";
 
 const app = express();
 const MongoDBStore = ConnectMongoDBSession(session);
@@ -51,6 +52,9 @@ app.use(
     },
   })
 );
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.set("view engine", "ejs");
 app.set("views", "views");
