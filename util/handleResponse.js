@@ -20,7 +20,7 @@ export const handleResponse = (
     if (renderView) {
       return res.render(renderView, {
         [dataKey]: data || [],
-        isLoggedIn: req?.session?.userId,
+        isLoggedIn: req.session.passport.user,
         currentPath: req?.originalUrl || "/"
       });
     }
