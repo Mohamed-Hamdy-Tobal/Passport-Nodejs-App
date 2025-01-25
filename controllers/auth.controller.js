@@ -3,6 +3,7 @@ import { handleResponse } from "../util/handleResponse.js";
 import bcrypt from "bcryptjs";
 import Joi from "joi";
 import { STATUS_CODES } from "../util/StatusCodes.js";
+import passport from "../config/passport.config.js";
 
 const signupSchema = Joi.object({
   username: Joi.string().min(2).required(),
@@ -86,40 +87,31 @@ export const postSignup = async (req, res, next) => {
 };
 
 export const postLogin = async (req, res, next) => {
-  console.log("BODY : ", req.body);
-
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return handleResponse(res, {
-      status: STATUS_CODES.FAIL,
-      message: "Please provide both email and password",
+  passport.authenticate("local", (err, user, info) => {
+    if (err) return next(err);
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: info.message || "Login failed!",
+      });
+    }
+    req.logIn(user, (err) => {
+      if (err) return next(err);
+      return handleResponse(
+        res,
+        {
+          success: true,
+          status: STATUS_CODES.SUCCESS,
+          message: "Login Successfully",
+          data: {
+            user,
+          },
+        },
+        req
+      );
     });
-  }
-
-  const user = await UserModel.findOne({ email }).select("+password");
-  if (!user || !(await bcrypt.compare(password, user.password))) {
-    return handleResponse(res, {
-      status: STATUS_CODES.AUTH,
-      message: "Invalid credentials!",
-    });
-  }
-
-  req.session.userId = user._id;
-
-  return handleResponse(
-    res,
-    {
-      success: true,
-      status: STATUS_CODES.SUCCESS,
-      message: "Login Successfully",
-      data: {
-        user,
-      },
-    },
-    req
-  );
+  })(req, res, next);
 };
-
 export const authLogout = async (req, res, next) => {
   try {
     req.session.destroy((err) => {
