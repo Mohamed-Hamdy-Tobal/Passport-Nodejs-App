@@ -8,16 +8,28 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: true,
     unique: true,
     validate: {
-      validator: (value) => validator.isEmail(value),
-      message: "field must be a valid email address",
+      validator: function (value) {
+        if (this.githubId) return true;
+        return validator.isEmail(value);
+      },
+      message: "Field must be a valid email address",
+    },
+    required: function () {
+      return !this.githubId;
     },
   },
   password: {
     type: String,
-    required: true,
+    required: function () {
+      return !this.githubId;
+    },
+  },
+  githubId: {
+    type: String,
+    sparse: true,
+    default: null,
   },
 });
 
