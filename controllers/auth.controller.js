@@ -112,6 +112,7 @@ export const postLogin = async (req, res, next) => {
     });
   })(req, res, next);
 };
+
 export const authLogout = async (req, res, next) => {
   try {
     req.session.destroy((err) => {
