@@ -20,8 +20,9 @@ export const handleResponse = (
     if (renderView) {
       return res.render(renderView, {
         [dataKey]: data || [],
-        isLoggedIn: req.session.passport.user,
-        currentPath: req?.originalUrl || "/"
+        isLoggedIn: req?.session?.passport?.user,
+        user: req?.user || req?.session?.passport?.user || null,
+        currentPath: req?.originalUrl || "/",
       });
     }
     return res.status(status || 200).json({
