@@ -18,6 +18,11 @@ import {
   facebookCallback,
   facebookCallbackHandler,
 } from "../controllers/facebookAuth.controller.js";
+import {
+  googleLogin,
+  googleCallback,
+  googleCallbackHandler,
+} from "../controllers/googleAuth.controller.js";
 
 const router = express.Router();
 
@@ -41,6 +46,12 @@ router.route("/auth/facebook").get(facebookLogin);
 router
   .route("/auth/facebook/cb")
   .get(facebookCallback, facebookCallbackHandler);
+
+// middleware triggers the authentication process with google
+router.route("/auth/google").get(googleLogin);
+
+// google authentication callback
+router.route("/auth/google/cb").get(googleCallback, googleCallbackHandler);
 
 router.route("/logout").all(authLogout);
 
