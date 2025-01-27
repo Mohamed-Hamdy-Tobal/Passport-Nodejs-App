@@ -60,6 +60,7 @@ export const postSignup = async (req, res, next) => {
     const newUser = new UserModel({
       ...userData,
       password: hashedPassword,
+      provider: "local",
     });
 
     await newUser.save();
