@@ -17,10 +17,15 @@ passport.use(
           githubId: profile?.id,
         });
         if (!user) {
+          const email =
+            profile.emails?.[0]?.value || `${profile.username}@github.com`;
+          const username =
+            profile.username || profile.displayName || `user_${profile.id}`;
           user = await UserModel.create({
-            username: profile.username || profile.displayName,
-            email: profile.emails?.[0]?.value || "",
+            username,
+            email,
             githubId: profile?.id,
+            provider: "github",
           });
         }
         return done(null, user); // (if error, if successful)
@@ -32,7 +37,7 @@ passport.use(
 );
 
 passport.serializeUser((user, done) => {
-  done(null, user.id);  // Store only the user ID in the session
+  done(null, user.id); // Store only the user ID in the session
 });
 
 passport.deserializeUser((id, done) => {
