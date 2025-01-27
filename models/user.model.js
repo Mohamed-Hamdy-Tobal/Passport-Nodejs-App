@@ -1,12 +1,8 @@
 import mongoose from "mongoose";
-import validator from "validator";
 
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
-    unique: true,
-    trim: true,
-    required: true,
   },
   email: {
     type: String,
@@ -23,21 +19,12 @@ const userSchema = new mongoose.Schema({
   },
   githubId: {
     type: String,
-    unique: true,
-    sparse: true,
-    default: '',
   },
   facebookId: {
     type: String,
-    unique: true,
-    sparse: true,
-    default: '',
   },
   googleId: {
     type: String,
-    unique: true,
-    sparse: true,
-    default: '',
   },
   provider: {
     type: String,
