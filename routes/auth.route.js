@@ -8,9 +8,16 @@ import {
 } from "../controllers/auth.controller.js";
 import multer from "multer";
 import { isGuest } from "../middleware/auth.middleware.js";
-import { passportGithub } from "../config/passportGithub.config.js";
-import { handleResponse } from "../util/handleResponse.js";
-import { STATUS_CODES } from "../util/StatusCodes.js";
+import {
+  githubCallback,
+  githubCallbackHandler,
+  githubLogin,
+} from "../controllers/githubAuth.controller.js";
+import {
+  facebookLogin,
+  facebookCallback,
+  facebookCallbackHandler,
+} from "../controllers/facebookAuth.controller.js";
 
 const router = express.Router();
 
@@ -22,29 +29,18 @@ router
 router.route("/login").get(isGuest, getLogin).post(multer().any(), postLogin);
 
 // middleware triggers the authentication process with GitHub
-router.route("/auth/github").get(
-  passportGithub.authenticate("github", {
-    scope: ["user"],
-  })
-);
+router.route("/auth/github").get(githubLogin);
 
-// will redirect to after the user has successfully authenticated with GitHub.
+// GitHub authentication callback
+router.route("/auth/github/cb").get(githubCallback, githubCallbackHandler);
+
+// middleware triggers the authentication process with Facebook
+router.route("/auth/facebook").get(facebookLogin);
+
+// Facebook authentication callback
 router
-  .route("/auth/github/cb")
-  .get(
-    passportGithub.authenticate("github", { failureRedirect: "/login" }),
-    (req, res) => {
-      return handleResponse(
-        res,
-        {
-          success: true,
-          status: STATUS_CODES.SUCCESS,
-          renderView: "index",
-        },
-        req
-      );
-    }
-  );
+  .route("/auth/facebook/cb")
+  .get(facebookCallback, facebookCallbackHandler);
 
 router.route("/logout").all(authLogout);
 
