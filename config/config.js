@@ -14,4 +14,8 @@ export const config = {
     clientID: process.env.FACEBOOK_CLIENT_ID,
     clientSecretKey: process.env.FACEBOOK_CLIENT_SECRET_KEY,
   },
+  google: {
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecretKey: process.env.GOOGLE_CLIENT_SECRET_KEY,
+  },
 };
